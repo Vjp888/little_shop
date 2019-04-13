@@ -23,7 +23,7 @@ default: &default
 
 development:
   <<: *default
-  database: little_shop_development
+  database: little_shop_instructor_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -80,6 +80,6 @@ test:
 #
 production:
   <<: *default
-  database: little_shop_production
+  database: little_shop_instsructor_production
   username: little_shop
   password: <%= ENV['LITTLE_SHOP_DATABASE_PASSWORD'] %>
