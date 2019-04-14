@@ -110,4 +110,33 @@ RSpec.describe 'Merchat Creating A Coupon', type: :feature do
 
     expect(page).to have_content("Name has already been taken")
   end
+
+  it 'a coupon can be disabled or disabled' do
+    coupon_1 = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+    coupon_2 = Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 50, merchant_id: @merchant.id, enabled: false)
+
+
+    visit dashboard_coupons_path
+
+    within "#coupon-#{coupon_1.id}" do
+      expect(page).to_not have_button("Enable")
+      expect(page).to have_button("Disable")
+      click_button "Disable"
+    end
+    within "#coupon-#{coupon_1.id}" do
+      expect(page).to have_button("Enable")
+    end
+
+    within "#coupon-#{coupon_2.id}" do
+      expect(page).to_not have_button("Disable")
+      expect(page).to have_button("Enable")
+      click_button "Enable"
+    end
+    within "#coupon-#{coupon_2.id}" do
+      expect(page).to have_button("Disable")
+    end
+
+    expect(Coupon.last.enabled?).to eq(true)
+    expect(Coupon.first.enabled?).to eq(false)
+  end
 end
