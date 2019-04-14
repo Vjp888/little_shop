@@ -1,5 +1,8 @@
-<p>Number of Coupons: <%= @coupons.count %>/5</p>
-<%= link_to "Create Coupon" %>
+<p>Number of Coupons: <%= @coupon_count %>/5</p>
+<% unless @coupon_count >= 5 %>
+  <%= link_to "Create Coupon", new_dashboard_coupon_path %>
+<% end %>
+
 <% if @coupons.count > 0 %>
   <% @coupons.each do |coupon| %>
     <section id="coupon-<%= coupon.id %>">

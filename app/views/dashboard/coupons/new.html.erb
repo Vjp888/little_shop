@@ -1,0 +1,25 @@
+<% if @coupon.errors.any? %>
+<ul>
+  <% @coupon.errors.full_messages.each do |msg| %>
+  <li><%= msg %></li>
+  <% end %>
+</ul>
+<% end %>
+<%= form_for @coupon, url: dashboard_coupons_path do |f| %>
+  <p>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <%= f.label :discount_type, "Discount Type" %>
+    <%= f.text_field :discount_type %>
+  </p>
+
+  <p>
+    <%= f.label :amount_off, "Amount Off" %>
+    <%= f.number_field :amount_off %>
+  </p>
+
+  <%= f.submit %>
+<% end %>
