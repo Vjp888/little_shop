@@ -9,6 +9,11 @@
       <p>Code: <%= coupon.name %></p>
       <p>Type: <%= coupon.discount_type %></p>
       <p>Amount Off: <%= coupon.amount_off %></p>
+      <% if coupon.enabled? %>
+        <%= button_to "Disable", dashboard_disable_coupon_path(coupon), method: :patch %>
+      <% else %>
+        <%= button_to "Enable", dashboard_enable_coupon_path(coupon), method: :patch %>
+      <% end %>
     </section>
   <% end %>
 <% else %>

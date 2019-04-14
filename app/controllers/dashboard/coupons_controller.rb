@@ -24,6 +24,21 @@ class Dashboard::CouponsController < Dashboard::BaseController
     end
   end
 
+  def disable
+    coupon = Coupon.find(params[:id])
+    # binding.pry
+    coupon.toggle :enabled
+    coupon.save
+    redirect_to dashboard_coupons_path
+  end
+
+  def enable
+    coupon = Coupon.find(params[:id])
+    coupon.toggle :enabled
+    coupon.save
+    redirect_to dashboard_coupons_path
+  end
+
   private
 
   def coupon_params
