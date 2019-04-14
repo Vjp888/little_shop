@@ -139,4 +139,24 @@ RSpec.describe 'Merchat Creating A Coupon', type: :feature do
     expect(Coupon.last.enabled?).to eq(true)
     expect(Coupon.first.enabled?).to eq(false)
   end
+
+  it 'allows a merchant to delete a coupon if it has not been used' do
+    coupon_1 = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+    coupon_2 = Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 50, merchant_id: @merchant.id, enabled: false)
+    create(:order, coupon_id: coupon_1.id)
+
+    visit dashboard_coupons_path
+
+    within "#coupon-#{coupon_1.id}" do
+      expect(page).to_not have_button("Delete")
+    end
+
+    within "#coupon-#{coupon_2.id}" do
+      expect(page).to have_button("Delete")
+      click_button "Delete"
+    end
+
+    expect(page).to_not have_content("coupon 2")
+    expect(page).to have_content("coupon 1")
+  end
 end
