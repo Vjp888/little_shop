@@ -77,12 +77,16 @@ RSpec.describe 'Merchat Creating A Coupon', type: :feature do
     end
   end
 
-  it 'does not let a merchant create more than five coupons' do
+  it 'does not let a merchant create more than five coupons with url or clickable link' do
     Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
     Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 50, merchant_id: @merchant.id)
     Coupon.create(name: "coupon 3", discount_type: 1, amount_off: 50, merchant_id: @merchant.id)
     Coupon.create(name: "coupon 4", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
     Coupon.create(name: "coupon 5", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+
+    visit new_dashboard_coupon_path
+
+    expect(page).to have_content("You can not make anymore coupons")
 
     visit dashboard_coupons_path
 
