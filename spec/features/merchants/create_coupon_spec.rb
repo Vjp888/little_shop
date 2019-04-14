@@ -59,8 +59,8 @@ RSpec.describe 'Merchat Creating A Coupon', type: :feature do
   it 'It allows a merchant to create a coupon' do
     visit dashboard_coupons_path
 
-    expect(page).to have_content("You have no coupons, create on now!")
-
+    expect(page).to have_content("You have no coupons, create one now!")
+    
     click_link "Create Coupon"
 
     fill_in "Name", with: "1234"

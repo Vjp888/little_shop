@@ -1,1 +1,13 @@
-<p>Number of Coupons <%= @coupons.count %>/5</p>
+<p>Number of Coupons: <%= @coupons.count %>/5</p>
+<%= link_to "Create Coupon" %>
+<% if @coupons.count > 0 %>
+  <% @coupons.each do |coupon| %>
+    <section id="coupon-<%= coupon.id %>">
+      <p>Code: <%= coupon.name %></p>
+      <p>Type: <%= coupon.discount_type %></p>
+      <p>Amount Off: <%= coupon.amount_off %></p>
+    </section>
+  <% end %>
+<% else %>
+  <p>You have no coupons, create one now!</p>
+<% end %>
