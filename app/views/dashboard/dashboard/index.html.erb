@@ -71,13 +71,12 @@
 <% end %>
 
 <section>
-  <p>
   <% if current_merchant? && current_user == @merchant %>
-  <%= link_to 'Items for Sale', dashboard_items_path %>
+  <p><%= link_to 'Items for Sale', dashboard_items_path %></p>
+  <p><%= link_to 'Manage Coupons', dashboard_coupons_path %></p>
   <% elsif current_admin? %>
-  <%= link_to 'Items for Sale', admin_merchant_items_path(@merchant) %>
+  <p><%= link_to 'Items for Sale', admin_merchant_items_path(@merchant) %></p>
   <% end %>
-  </p>
 </section>
 
 <% if @pending_orders %>

@@ -12,7 +12,7 @@ class User < ApplicationRecord
 
   # as a merchant
   has_many :items, foreign_key: 'merchant_id'
-  has_many :coupons
+  has_many :coupons, foreign_key: 'merchant_id'
 
   def active_items
     items.where(active: true).order(:name)

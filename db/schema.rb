@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 20190413232949) do
 
   create_table "coupons", force: :cascade do |t|
     t.string "name"
-    t.integer "type"
+    t.integer "discount_type"
     t.integer "amount_off"
     t.bigint "merchant_id"
     t.index ["merchant_id"], name: "index_coupons_on_merchant_id"
