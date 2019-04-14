@@ -9,4 +9,11 @@ class Coupon < ApplicationRecord
   belongs_to :user, foreign_key: 'merchant_id'
   has_many :orders
 
+  def used?
+    if self.orders.count > 0
+      true
+    else
+      false
+    end
+  end
 end
