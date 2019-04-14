@@ -14,6 +14,9 @@
       <% else %>
         <%= button_to "Enable", dashboard_enable_coupon_path(coupon), method: :patch %>
       <% end %>
+      <% unless coupon.used? %>
+        <%= button_to "Delete Coupon", dashboard_delete_coupon_path(coupon), method: :delete %>
+      <% end %>
     </section>
   <% end %>
 <% else %>

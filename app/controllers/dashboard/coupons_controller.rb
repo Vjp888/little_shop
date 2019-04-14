@@ -38,6 +38,12 @@ class Dashboard::CouponsController < Dashboard::BaseController
     redirect_to dashboard_coupons_path
   end
 
+  def destroy
+    coupon = Coupon.find(params[:id])
+    coupon.delete
+    redirect_to dashboard_coupons_path
+  end
+
   private
 
   def coupon_params

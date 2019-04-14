@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     resources :coupons, only: [:index, :create, :new]
     patch '/coupons/:id/enable', to: 'coupons#enable', as: 'enable_coupon'
     patch '/coupons/:id/disable', to: 'coupons#disable', as: 'disable_coupon'
+    delete 'coupons/:id/delete', to: 'coupons#destroy', as: 'delete_coupon'
     patch '/items/:id/enable', to: 'items#enable', as: 'enable_item'
     patch '/items/:id/disable', to: 'items#disable', as: 'disable_item'
     put '/order_items/:order_item_id/fulfill', to: 'orders#fulfill', as: 'fulfill_order_item'
