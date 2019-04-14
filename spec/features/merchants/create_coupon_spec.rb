@@ -60,7 +60,7 @@ RSpec.describe 'Merchat Creating A Coupon', type: :feature do
     visit dashboard_coupons_path
 
     expect(page).to have_content("You have no coupons, create one now!")
-    
+
     click_link "Create Coupon"
 
     fill_in "Name", with: "1234"
@@ -75,5 +75,35 @@ RSpec.describe 'Merchat Creating A Coupon', type: :feature do
     within "#coupon-#{coupon.id}" do
       expect(page).to have_content("Code: #{coupon.name}")
     end
+  end
+
+  it 'does not let a merchant create more than five coupons' do
+    Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+    Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 50, merchant_id: @merchant.id)
+    Coupon.create(name: "coupon 3", discount_type: 1, amount_off: 50, merchant_id: @merchant.id)
+    Coupon.create(name: "coupon 4", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+    Coupon.create(name: "coupon 5", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+
+    visit dashboard_coupons_path
+
+    expect(page).to have_content("Number of Coupons: 5/5")
+
+    expect(page).to_not have_link("Create Coupon")
+  end
+
+  it 'does not let a merchant create a coupon with the same name as another coupon' do
+    Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+
+    visit dashboard_coupons_path
+
+    click_link "Create Coupon"
+
+    fill_in "Name", with: "coupon 1"
+    fill_in "Discount Type", with: "percentage"
+    fill_in "Amount Off", with: "10"
+
+    click_button "Create Coupon"
+
+    expect(page).to have_content("Name has already been taken")
   end
 end
