@@ -148,14 +148,15 @@ RSpec.describe 'Merchat Creating A Coupon', type: :feature do
     visit dashboard_coupons_path
 
     within "#coupon-#{coupon_1.id}" do
-      expect(page).to_not have_button("Delete")
+      expect(page).to_not have_button("Delete Coupon")
     end
 
     within "#coupon-#{coupon_2.id}" do
-      expect(page).to have_button("Delete")
-      click_button "Delete"
+      expect(page).to have_button("Delete Coupon")
+      click_button "Delete Coupon"
     end
 
+    expect(current_path).to eq(dashboard_coupons_path)
     expect(page).to_not have_content("coupon 2")
     expect(page).to have_content("coupon 1")
   end
