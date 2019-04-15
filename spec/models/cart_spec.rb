@@ -8,6 +8,15 @@ RSpec.describe Cart do
       @cart = Cart.new({"1" => 3, "4" => 2})
     end
 
+    describe '#coupon' do
+      it 'returns the coupon that is added to the cart' do
+        merchant = create(:merchant)
+        coupon = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: merchant.id)
+        @cart.add_coupon(coupon)
+        expect(@cart.coupon).to eq(coupon)
+      end
+    end
+
     describe "#total_item_count" do
       it "returns the total item count" do
         expect(@cart.total_item_count).to eq(5)
