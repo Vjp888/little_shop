@@ -2,6 +2,9 @@ class CartController < ApplicationController
   before_action :visitor_or_user
 
   def show
+    if session[:coupon]
+      cart.add_coupon(session[:coupon])
+    end
   end
 
   def increment

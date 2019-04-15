@@ -36,8 +36,12 @@ class Cart
   end
 
   def total #possible entry point? create helper to check for coupon and adjust #price.
-    items.sum do |item, quantity|
-      item.price * quantity
+    if @coupon
+      cart_sum(Coupon.find(@coupon))
+    else
+      items.sum do |item, quantity|
+        item.price * quantity
+      end
     end
   end
 
@@ -47,5 +51,32 @@ class Cart
 
   def add_coupon(coupon)
     @coupon = coupon
+  end
+
+  def cart_sum(coupon)
+    case coupon.discount_type
+    when 'percentage'
+      items.sum do |item, quantity|
+        if item.merchant_id == coupon.merchant_id
+          (item.price * (coupon.amount_off.to_f / 100)) * quantity
+        else
+          item.price * quantity
+        end
+      end
+
+    when 'dollar'
+      items.sum do |item, quantity|
+        if item.merchant_id == coupon.merchant_id
+          price = item.price - coupon.amount_off
+          unless price > 0
+            0
+          else
+            price * quantity
+          end
+        else
+          item.price * quantity
+        end
+      end
+    end
   end
 end
