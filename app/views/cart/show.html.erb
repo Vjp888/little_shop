@@ -2,6 +2,18 @@
 <% if cart.contents.empty? %>
   <p>Your Cart is empty.</p>
 <% else %>
+  <section id="coupon-code">
+    <p>Have a coupon code?</p>
+    <%= form_tag coupon_check_path do %>
+    <p>
+      <%= label_tag :enter_here %>
+      <%= text_field_tag :coupon_code %>
+    </p>
+    <p>
+      <%= submit_tag :submit %>
+    </p>
+    <% end %>
+  </section>
   <h3>Total: <%= number_to_currency(cart.total) %></h3>
   <% if current_user %>
     <%= button_to "Check Out", profile_orders_path, method: :post %>

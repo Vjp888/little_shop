@@ -34,7 +34,7 @@ class Cart
     end.to_h
   end
 
-  def total
+  def total #possible entry point? create helper to check for coupon and adjust #price.
     items.sum do |item, quantity|
       item.price * quantity
     end

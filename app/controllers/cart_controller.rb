@@ -35,4 +35,15 @@ class CartController < ApplicationController
     flash[:success] = "#{item.name} has been removed from your cart."
     redirect_to cart_path
   end
+
+  def coupon_check
+    if coupon = Coupon.find_by(name: params[:coupon_code])
+      session[:coupon] = coupon.id
+      flash[:notice] = "You have applied #{coupon.name} to your cart"
+      redirect_to cart_path
+    else
+      flash[:error] = "#{params[:coupon_code]} is not a valid coupon"
+      redirect_to cart_path
+    end
+  end
 end
