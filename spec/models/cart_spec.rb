@@ -3,17 +3,38 @@ require 'rails_helper'
 RSpec.describe Cart do
   describe "Cart with existing contents" do
     before :each do
-      @item_1 = create(:item, id: 1)
-      @item_4 = create(:item, id: 4)
+      @merchant_1 = create(:merchant)
+      @merchant_2 = create(:merchant)
+      @coupon_1 = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant_1.id)
+      @coupon_2 = Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 50, merchant_id: @merchant_2.id)
+      @coupon_3 = Coupon.create(name: "coupon 3", discount_type: 1, amount_off: 400, merchant_id: @merchant_2.id)
+      @item_1 = create(:item, id: 1, merchant_id: @merchant_1.id, price: 500)
+      @item_4 = create(:item, id: 4, merchant_id: @merchant_2.id, price: 300)
       @cart = Cart.new({"1" => 3, "4" => 2})
+      @cart_2 = Cart.new({"4" => 1})
     end
 
-    describe '#coupon' do
-      it 'returns the coupon that is added to the cart' do
-        merchant = create(:merchant)
-        coupon = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: merchant.id)
-        @cart.add_coupon(coupon)
-        expect(@cart.coupon).to eq(coupon)
+    describe '#add_coupon' do
+      it 'Adds a coupon to the cart variable' do
+        @cart.add_coupon(@coupon_1.id)
+        expect(@cart.coupon).to eq(@coupon_1.id)
+      end
+    end
+
+    describe 'helper methods' do
+      describe '#cart_sum' do
+        it 'will calculate totals with a percentage based coupon is present' do
+          @cart.add_coupon(@coupon_1.id)
+          expect((@cart.total.to_f)).to eq(1350.0)
+        end
+        it 'will calculate totals with a dollar based coupon is present' do
+          @cart.add_coupon(@coupon_2.id)
+          expect((@cart.total.to_f)).to eq(2000.0)
+        end
+        it 'will return 0 if the coupon exceed the dollar amount of the items in the cart' do
+          @cart_2.add_coupon(@coupon_3.id)
+          expect((@cart_2.total.to_f)).to eq(0)
+        end
       end
     end
 

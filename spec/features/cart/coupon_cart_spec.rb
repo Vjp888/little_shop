@@ -7,6 +7,7 @@ RSpec.describe 'as a user or visitor', type: :feature do
       @merchant_2 = create(:merchant)
       @item_1 = create(:item, merchant_id: @merchant_1.id, price: 500)
       @item_2 = create(:item, merchant_id: @merchant_2.id, price: 40)
+      @item_3 = create(:item, merchant_id: @merchant_2.id, price: 500)
       @coupon_1 = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant_1.id)
       @coupon_2 = Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 50, merchant_id: @merchant_2.id)
     end
@@ -24,7 +25,7 @@ RSpec.describe 'as a user or visitor', type: :feature do
       end
     end
 
-    it 'will check accept a coupon code and set it to the session' do
+    it 'will check accept a coupon code and set it to the cart' do
 
       visit item_path(@item_1)
 
@@ -51,19 +52,34 @@ RSpec.describe 'as a user or visitor', type: :feature do
       expect(page).to have_content("bad coupon is not a valid coupon")
     end
 
-    it 'will adjust the price of the cart when a coupon is applied' do
+    it 'will adjust the price by percentage of the cart when a coupon is applied' do
       visit item_path(@item_1)
 
       click_button "Add to Cart"
 
       visit cart_path
-      
+
       expect(page).to have_content("Total: $500.00")
 
       fill_in :coupon_code, with: 'coupon 1'
       click_button 'submit'
 
       expect(page).to have_content("Total: $250.00")
+    end
+
+    it 'will adjust dollar value of the cart when a coupon is applied' do
+      visit item_path(@item_3)
+
+      click_button "Add to Cart"
+
+      visit cart_path
+
+      expect(page).to have_content("Total: $500.00")
+
+      fill_in :coupon_code, with: 'coupon 2'
+      click_button 'submit'
+
+      expect(page).to have_content("Total: $450.00")
     end
   end
 end
