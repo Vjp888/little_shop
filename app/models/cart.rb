@@ -1,9 +1,10 @@
 class Cart
-  attr_reader :contents
+  attr_reader :contents, :coupon
 
   def initialize(initial_contents)
     @contents = initial_contents || Hash.new(0)
     @contents.default = 0
+    @coupon = nil
   end
 
   def total_item_count
@@ -42,5 +43,9 @@ class Cart
 
   def subtotal(item)
     count_of(item.id) * item.price
+  end
+
+  def add_coupon(coupon)
+    @coupon = coupon
   end
 end

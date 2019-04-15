@@ -57,7 +57,7 @@ RSpec.describe 'as a user or visitor', type: :feature do
       click_button "Add to Cart"
 
       visit cart_path
-
+      
       expect(page).to have_content("Total: $500.00")
 
       fill_in :coupon_code, with: 'coupon 1'
