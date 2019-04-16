@@ -31,11 +31,13 @@ class Profile::OrdersController < ApplicationController
   end
 
   def create
+    coupon = Coupon.find(session[:coupon]) if session[:coupon]
     order = Order.create(user: current_user, status: :pending)
     cart.items.each do |item, quantity|
-      order.order_items.create(item: item, quantity: quantity, price: item.price)
+      order.order_items.create(item: item, quantity: quantity, price: item.adjusted_price(coupon))
     end
     session.delete(:cart)
+    session.delete(:coupon)
     flash[:success] = "Your order has been created!"
     redirect_to profile_orders_path
   end
