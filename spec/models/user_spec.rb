@@ -168,6 +168,16 @@ RSpec.describe User, type: :model do
       expect(@m1.top_cities_by_items_shipped(3)[2].quantity).to eq(6)
     end
 
+    it '.chart_top_cities' do
+      expected = {'Anywhere, IA' => 10, "Tulsa, OK" => 8, 'Anywhere, CO' => 6}
+      expect(@m1.chart_top_cities).to eq(expected)
+    end
+
+    it '.chart_top_states' do
+      expected = {'IA' => 10, "OK" => 8, 'CO' => 6}
+      expect(@m1.chart_top_states).to eq(expected)
+    end
+
     it '.top_users_by_money_spent' do
       expect(@m1.top_users_by_money_spent(3)[0].name).to eq(@u3.name)
       expect(@m1.top_users_by_money_spent(3)[0].total.to_f).to eq(66.00)
