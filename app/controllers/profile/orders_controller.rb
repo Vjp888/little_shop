@@ -8,6 +8,9 @@ class Profile::OrdersController < ApplicationController
 
   def show
     @order = Order.find(params[:id])
+    unless @order.coupon_id == nil
+      @coupon = Coupon.find(@order.coupon_id)
+    end
   end
 
   def destroy

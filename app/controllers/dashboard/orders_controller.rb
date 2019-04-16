@@ -5,6 +5,7 @@ class Dashboard::OrdersController < Dashboard::BaseController
     @order = Order.find(params[:id])
     @user = @order.user
     @order_items = @order.order_items_for_merchant(@merchant.id)
+    @coupon = @order.coupon
   end
 
   def fulfill

@@ -5,6 +5,14 @@
   <p>Status: <%= @order.status %></p>
   <p>Item Count: <%= @order.total_item_count %></p>
   <p>Total Cost: <%= number_to_currency(@order.total_cost) %></p>
+  <% if @coupon %>
+    <p>Coupon Used?: Yes</p>
+    <p>Code: <%= @coupon.name %></p>
+    <p>Type: <%= @coupon.discount_type %></p>
+    <p>Amount Off: <%= @coupon.amount_off %></p>
+  <% else %>
+    <p>Coupon Used?: No</p>
+  <% end %>
 
   <% if @order.status == 'pending' || @order.status == 'packaged' %>
   <p><%= button_to 'Cancel Order', profile_order_path(@order), method: :delete %></p>

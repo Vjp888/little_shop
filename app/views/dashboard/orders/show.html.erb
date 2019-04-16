@@ -1,4 +1,12 @@
 <%= tag.div id: "order-#{@order.id}" do %>
+<% if @coupon %>
+  <p>Coupon Used?: Yes</p>
+  <p>Code: <%= @coupon.name %></p>
+  <p>Type: <%= @coupon.discount_type %></p>
+  <p>Amount Off: <%= @coupon.amount_off %></p>
+<% else %>
+  <p>Coupon Used?: No</p>
+<% end %>
   <p>Customer Name: <%= @user.name %></p>
   <p>Customer Address:</p>
   <p><%= @user.address %></p>
