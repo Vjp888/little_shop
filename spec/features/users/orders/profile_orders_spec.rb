@@ -71,6 +71,7 @@ RSpec.describe 'Profile Orders page', type: :feature do
         expect(page).to have_content("Created: #{@order.created_at}")
         expect(page).to have_content("Last Update: #{@order.updated_at}")
         expect(page).to have_content("Status: #{@order.status}")
+        expect(page).to have_content("Coupon Used?: No")
         within "#oitem-#{@oi_1.id}" do
           expect(page).to have_content(@oi_1.item.name)
           expect(page).to have_content(@oi_1.item.description)
@@ -94,6 +95,40 @@ RSpec.describe 'Profile Orders page', type: :feature do
         end
         expect(page).to have_content("Item Count: #{@order.total_item_count}")
         expect(page).to have_content("Total Cost: #{number_to_currency(@order.total_cost)}")
+      end
+    end
+
+    describe 'It shows information about a coupon' do
+      it 'will show nothing if a coupon is not present' do
+        user = create(:user)
+        merchant = create(:merchant)
+        order = create(:order)
+        item_1 = create(:item)
+        item_2 = create(:item)
+        yesterday = 1.day.ago
+        coupon = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: merchant.id)
+        order = create(:order, user: user, created_at: yesterday, coupon_id: coupon.id)
+        oi_1 = create(:order_item, order: order, item: item_1, price: 1, quantity: 3, created_at: yesterday, updated_at: yesterday)
+        oi_2 = create(:fulfilled_order_item, order: order, item: item_2, price: 2, quantity: 5, created_at: yesterday, updated_at: 2.hours.ago)
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+        visit profile_order_path(order)
+
+        expect(page).to have_content("Coupon Used?: Yes")
+        expect(page).to have_content("Code: #{coupon.name}")
+        expect(page).to have_content("Code: #{coupon.name}")
+        expect(page).to have_content("Type: #{coupon.discount_type}")
+        expect(page).to have_content("Amount Off: #{coupon.amount_off}")
+      end
+
+      it 'does not show information about the coupon if there is none' do
+        user = create(:user)
+        order = create(:order)
+        yesterday = 1.day.ago
+        order = create(:order, user: user, created_at: yesterday)
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+        visit profile_order_path(order)
+
+        expect(page).to have_content("Coupon Used?: No")
       end
     end
   end
