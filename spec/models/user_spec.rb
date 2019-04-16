@@ -139,6 +139,10 @@ RSpec.describe User, type: :model do
       expect(@m1.percent_of_items_sold.round(2)).to eq(17.39)
     end
 
+    it '.percent_of_inventory_sold' do
+      expect(@m1.percent_of_inventory_sold).to eq({'sold' => 17.39, 'stock' => 82.61})
+    end
+
     it '.total_inventory_remaining' do
       expect(@m1.total_inventory_remaining).to eq(138)
     end
