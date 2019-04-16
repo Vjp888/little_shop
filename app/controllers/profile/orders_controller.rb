@@ -32,7 +32,11 @@ class Profile::OrdersController < ApplicationController
 
   def create
     coupon = Coupon.find(session[:coupon]) if session[:coupon]
-    order = Order.create(user: current_user, status: :pending)
+    if coupon
+      order = Order.create(user: current_user, status: :pending, coupon_id: coupon.id)
+    else
+      order = Order.create(user: current_user, status: :pending)
+    end
     cart.items.each do |item, quantity|
       order.order_items.create(item: item, quantity: quantity, price: item.adjusted_price(coupon))
     end

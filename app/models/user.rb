@@ -97,6 +97,15 @@ class User < ApplicationRecord
          .limit(1).first
   end
 
+  def used?(coupon)
+    check = self.orders.where(coupon_id: coupon.id).count
+    if check == 0
+      false
+    else
+      true
+    end
+  end
+
   def self.active_merchants
     where(role: :merchant, active: true)
   end

@@ -41,9 +41,18 @@ class CartController < ApplicationController
 
   def coupon_check
     if coupon = Coupon.find_by(name: params[:coupon_code])
-      session[:coupon] = coupon.id
-      flash[:notice] = "You have applied #{coupon.name} to your cart"
-      redirect_to cart_path
+      if current_user == nil
+        session[:coupon] = coupon.id
+        flash[:notice] = "You have applied #{coupon.name} to your cart"
+        redirect_to cart_path
+      elsif current_user.used?(coupon) == false
+        session[:coupon] = coupon.id
+        flash[:notice] = "You have applied #{coupon.name} to your cart"
+        redirect_to cart_path
+      else
+        flash[:error] = "#{coupon.name} can only be used once per customer"
+        redirect_to cart_path
+      end
     else
       flash[:error] = "#{params[:coupon_code]} is not a valid coupon"
       redirect_to cart_path
