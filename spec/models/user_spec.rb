@@ -68,6 +68,19 @@ RSpec.describe User, type: :model do
   end
 
   describe 'instance methods' do
+    describe '#used?(coupon)' do
+      it 'checks a users orders to see if they have used a coupon' do
+        user_1 = create(:user)
+        user_2 = create(:user)
+        merchant = create(:merchant)
+        coupon = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: merchant.id)
+        order = create(:order, coupon_id: coupon.id, user_id: user_1.id)
+        order = create(:order, user_id: user_2.id)
+
+        expect(user_1.used?(coupon)).to eq(true)
+        expect(user_2.used?(coupon)).to eq(false)
+      end
+    end
     before :each do
       @u1 = create(:user, state: "CO", city: "Anywhere")
       @u2 = create(:user, state: "OK", city: "Tulsa")
