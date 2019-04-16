@@ -37,6 +37,11 @@ class User < ApplicationRecord
     ((total_items_sold.to_f / total_inventory_remaining.to_f)*100)
   end
 
+  def percent_of_inventory_sold
+    inventory_percent = (100 - percent_of_items_sold).round(2)
+    {'sold' => percent_of_items_sold.round(2), 'stock' => inventory_percent}
+  end
+
   def total_inventory_remaining
     items.sum(:inventory)
   end
