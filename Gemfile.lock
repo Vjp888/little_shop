@@ -59,6 +59,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (>= 2.0, < 4.0)
+    chartkick (3.0.2)
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     coderay (1.1.2)
@@ -223,6 +224,7 @@ DEPENDENCIES
   brakeman
   byebug
   capybara (~> 2.13)
+  chartkick
   coffee-rails (~> 4.2)
   factory_bot_rails
   jbuilder (~> 2.5)
@@ -243,4 +245,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.17.1
+   2.0.1
