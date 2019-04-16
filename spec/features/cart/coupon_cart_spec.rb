@@ -117,5 +117,24 @@ RSpec.describe 'as a user or visitor', type: :feature do
 
       expect(Order.last.total_cost).to eq(0)
     end
+
+    it 'will only allow a user to use a coupon once' do
+      user = create(:user)
+      login_as(user)
+      visit item_path(@item_2)
+      click_button "Add to Cart"
+      visit cart_path
+      fill_in :coupon_code, with: 'coupon 2'
+      click_button 'submit'
+      click_button "Check Out"
+
+      visit item_path(@item_2)
+      click_button "Add to Cart"
+      visit cart_path
+      fill_in :coupon_code, with: 'coupon 2'
+      click_button 'submit'
+
+      expect(page).to have_content("coupon 2 can only be used once per customer")
+    end
   end
 end
