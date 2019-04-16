@@ -53,7 +53,8 @@ RSpec.describe Item, type: :model do
   describe 'instance methods' do
     before :each do
       @merchant = create(:merchant)
-      @item = create(:item, user: @merchant)
+      @item = create(:item, user: @merchant, price: 50)
+      @coupon = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
       @order_item_1 = create(:fulfilled_order_item, item: @item, created_at: 4.days.ago, updated_at: 12.hours.ago)
       @order_item_2 = create(:fulfilled_order_item, item: @item, created_at: 2.days.ago, updated_at: 1.day.ago)
       @order_item_3 = create(:fulfilled_order_item, item: @item, created_at: 2.days.ago, updated_at: 1.day.ago)
@@ -81,6 +82,16 @@ RSpec.describe Item, type: :model do
       it "returns false when the item has never been ordered" do
         unordered_item = create(:item)
         expect(unordered_item.ordered?).to be_falsy
+      end
+    end
+
+    describe '#adjusted_price(coupon)' do
+      it 'will return the adjusted price when a coupon is present' do
+        expect(@item.adjusted_price(@coupon).to_f).to eq(25.0)
+      end
+
+      it 'will return the original price if no coupon is present' do
+        expect(@item.adjusted_price.to_f).to eq(50.0)
       end
     end
   end

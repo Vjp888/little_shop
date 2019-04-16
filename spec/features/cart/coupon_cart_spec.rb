@@ -81,5 +81,41 @@ RSpec.describe 'as a user or visitor', type: :feature do
 
       expect(page).to have_content("Total: $450.00")
     end
+
+    it 'will show a total of zero if the coupon exceed the dollar value of the items' do
+      visit item_path(@item_2)
+
+      click_button "Add to Cart"
+
+      visit cart_path
+
+      expect(page).to have_content("Total: $40.00")
+
+      fill_in :coupon_code, with: 'coupon 2'
+      click_button 'submit'
+
+      expect(page).to have_content("Total: $0.00")
+    end
+
+    it 'discounts keeps the price when an order is created' do
+      user = create(:user)
+      login_as(user)
+      visit item_path(@item_2)
+
+      click_button "Add to Cart"
+
+      visit cart_path
+
+      expect(page).to have_content("Total: $40.00")
+
+      fill_in :coupon_code, with: 'coupon 2'
+      click_button 'submit'
+
+      expect(page).to have_content("Total: $0.00")
+
+      click_button "Check Out"
+
+      expect(Order.last.total_cost).to eq(0)
+    end
   end
 end
