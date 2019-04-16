@@ -48,4 +48,22 @@ class Item < ApplicationRecord
   def ordered?
     order_items.count > 0
   end
+
+  def adjusted_price(coupon = nil)
+    if coupon == nil
+      self.price
+    elsif coupon.merchant_id == self.merchant_id
+      case coupon.discount_type
+      when "percentage"
+        self.price * coupon.amount_off.to_f / 100
+      when "dollar"
+        cost = self.price - coupon.amount_off
+        if cost > 0
+          cost
+        else
+          0
+        end
+      end
+    end
+  end
 end
