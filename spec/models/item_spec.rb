@@ -54,7 +54,9 @@ RSpec.describe Item, type: :model do
     before :each do
       @merchant = create(:merchant)
       @item = create(:item, user: @merchant, price: 50)
-      @coupon = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+      @coupon_1 = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+      @coupon_2 = Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 10, merchant_id: @merchant.id)
+      @coupon_3 = Coupon.create(name: "coupon 3", discount_type: 1, amount_off: 60, merchant_id: @merchant.id)
       @order_item_1 = create(:fulfilled_order_item, item: @item, created_at: 4.days.ago, updated_at: 12.hours.ago)
       @order_item_2 = create(:fulfilled_order_item, item: @item, created_at: 2.days.ago, updated_at: 1.day.ago)
       @order_item_3 = create(:fulfilled_order_item, item: @item, created_at: 2.days.ago, updated_at: 1.day.ago)
@@ -87,7 +89,15 @@ RSpec.describe Item, type: :model do
 
     describe '#adjusted_price(coupon)' do
       it 'will return the adjusted price when a coupon is present' do
-        expect(@item.adjusted_price(@coupon).to_f).to eq(25.0)
+        expect(@item.adjusted_price(@coupon_1).to_f).to eq(25.0)
+      end
+
+      it 'will return the adjusted price when a coupon is dollar' do
+        expect(@item.adjusted_price(@coupon_2).to_f).to eq(40.0)
+      end
+
+      it 'will return 0 if the dollar amount is 0' do
+        expect(@item.adjusted_price(@coupon_3).to_f).to eq(0)
       end
 
       it 'will return the original price if no coupon is present' do
