@@ -136,5 +136,43 @@ RSpec.describe 'as a user or visitor', type: :feature do
 
       expect(page).to have_content("coupon 2 can only be used once per customer")
     end
+
+    it 'lets a user enter another coupon to replace the existing one' do
+      user = create(:user)
+      login_as(user)
+      visit item_path(@item_2)
+      click_button "Add to Cart"
+      visit cart_path
+      fill_in :coupon_code, with: 'coupon 2'
+      click_button 'submit'
+
+      expect(page).to have_content("You have applied coupon 2 to your cart")
+
+      visit item_path(@item_2)
+      click_button "Add to Cart"
+      visit cart_path
+      fill_in :coupon_code, with: 'coupon 1'
+      click_button 'submit'
+
+      expect(page).to have_content("You have applied coupon 1 to your cart")
+    end
+
+    it 'saves the coupon when a user navigated away from the page' do
+      user = create(:user)
+      login_as(user)
+      visit item_path(@item_2)
+      click_button "Add to Cart"
+      visit cart_path
+      fill_in :coupon_code, with: 'coupon 2'
+      click_button 'submit'
+
+      expect(page).to have_content("You have applied coupon 2 to your cart")
+
+      visit items_path
+
+      visit cart_path
+
+      expect(page).to have_content("Total: $0.00")
+    end
   end
 end
