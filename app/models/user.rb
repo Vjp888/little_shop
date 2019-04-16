@@ -57,6 +57,18 @@ class User < ApplicationRecord
          .limit(limit)
   end
 
+  def chart_top_cities
+    top_cities_by_items_shipped(3).map do |item|
+      ["#{item.city}, #{item.state}", item.quantity]
+    end.to_h
+  end
+
+  def chart_top_states
+    top_states_by_items_shipped(3).map do |item|
+      [item.state, item.quantity]
+    end.to_h
+  end
+
   def top_cities_by_items_shipped(limit)
     items.joins(:order_items)
          .joins('join orders on orders.id = order_items.order_id')
