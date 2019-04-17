@@ -55,7 +55,7 @@ class Item < ApplicationRecord
     elsif coupon.merchant_id == self.merchant_id
       case coupon.discount_type
       when "percentage"
-        self.price * coupon.amount_off.to_f / 100
+        (self.price - (self.price * coupon.amount_off.to_f / 100))
       when "dollar"
         cost = self.price - coupon.amount_off
         if cost > 0
@@ -64,6 +64,8 @@ class Item < ApplicationRecord
           0
         end
       end
+    else
+      self.price
     end
   end
 end

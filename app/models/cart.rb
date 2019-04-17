@@ -58,7 +58,7 @@ class Cart
     when 'percentage'
       items.sum do |item, quantity|
         if item.merchant_id == coupon.merchant_id
-          (item.price * (coupon.amount_off.to_f / 100)) * quantity
+          (item.price - (item.price * (coupon.amount_off.to_f / 100))) * quantity
         else
           item.price * quantity
         end
