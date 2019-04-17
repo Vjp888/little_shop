@@ -142,7 +142,7 @@ RSpec.describe 'Merchat Creating A Coupon', type: :feature do
 
   it 'allows a merchant to delete a coupon if it has not been used' do
     coupon_1 = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
-    coupon_2 = Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 50, merchant_id: @merchant.id, enabled: false)
+    coupon_2 = Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 50, merchant_id: @merchant.id)
     create(:order, coupon_id: coupon_1.id)
 
     visit dashboard_coupons_path
@@ -159,5 +159,55 @@ RSpec.describe 'Merchat Creating A Coupon', type: :feature do
     expect(current_path).to eq(dashboard_coupons_path)
     expect(page).to_not have_content("coupon 2")
     expect(page).to have_content("coupon 1")
+  end
+
+  it 'lets a merchant change the information for their coupon if it has not been used' do
+    coupon_1 = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+    coupon_2 = Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 50, merchant_id: @merchant.id, enabled: false)
+    create(:order, coupon_id: coupon_1.id)
+
+    visit dashboard_coupons_path
+
+    within "#coupon-#{coupon_1.id}" do
+      expect(page).to_not have_button("Edit Coupon")
+    end
+
+    within "#coupon-#{coupon_2.id}" do
+      expect(page).to have_button("Edit Coupon")
+      click_button "Edit Coupon"
+    end
+
+    fill_in "Name", with: "coupon 3"
+    fill_in "Discount Type", with: "dollar"
+    fill_in "Amount Off", with: "10"
+
+    click_button "Update Coupon"
+
+    expect(page).to have_content("Coupon Updated")
+    within "#coupon-#{coupon_2.id}" do
+      expect(page).to have_content("Code: coupon 3")
+      expect(page).to have_content("Type: dollar")
+      expect(page).to have_content("Amount Off: 10")
+    end
+  end
+
+  it 'will not update if bad info is given' do
+    coupon_1 = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
+    coupon_2 = Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 50, merchant_id: @merchant.id, enabled: false)
+    create(:order, coupon_id: coupon_1.id)
+
+    visit dashboard_coupons_path
+
+    within "#coupon-#{coupon_2.id}" do
+      expect(page).to have_button("Edit Coupon")
+      click_button "Edit Coupon"
+    end
+
+    fill_in "Name", with: "coupon 1"
+    fill_in "Discount Type", with: "dollar"
+    fill_in "Amount Off", with: "10"
+    click_button "Update Coupon"
+
+    expect(page).to have_content("Name has already been taken")
   end
 end
