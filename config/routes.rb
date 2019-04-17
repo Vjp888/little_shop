@@ -32,7 +32,9 @@ Rails.application.routes.draw do
     get '/', to: 'dashboard#index'
 
     resources :items
-    resources :coupons, only: [:index, :create, :new]
+    resources :coupons, only: [:index, :create, :new, ]
+    get '/coupons/:id/edit', to: 'coupons#edit', as: 'edit_coupon'
+    patch '/coupons/:id/edit', to: 'coupons#update'
     patch '/coupons/:id/enable', to: 'coupons#enable', as: 'enable_coupon'
     patch '/coupons/:id/disable', to: 'coupons#disable', as: 'disable_coupon'
     delete 'coupons/:id/delete', to: 'coupons#destroy', as: 'delete_coupon'

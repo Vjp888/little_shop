@@ -24,6 +24,21 @@ class Dashboard::CouponsController < Dashboard::BaseController
     end
   end
 
+  def edit
+    @coupon = Coupon.find(params[:id])
+  end
+
+  def update
+    @coupon = Coupon.find(params[:id])
+    @coupon.update(coupon_params)
+    if @coupon.save
+      flash[:update] = "Coupon Updated"
+      redirect_to dashboard_coupons_path
+    else
+      render :edit
+    end
+  end
+
   def disable
     coupon = Coupon.find(params[:id])
     coupon.toggle :enabled

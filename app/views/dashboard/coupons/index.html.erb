@@ -16,6 +16,7 @@
       <% end %>
       <% unless coupon.used? %>
         <%= button_to "Delete Coupon", dashboard_delete_coupon_path(coupon), method: :delete %>
+        <%= button_to "Edit Coupon", dashboard_edit_coupon_path(coupon), method: :get %>
       <% end %>
     </section>
   <% end %>
