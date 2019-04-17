@@ -133,9 +133,9 @@ RSpec.describe User, type: :model do
         @oi61.fulfill
         @oi71.fulfill
       end
-      xit 'returns the past twelve months of revenue for a merchant' do
-        expected = {}
-        binding.pry
+      it 'returns the past twelve months of revenue for a merchant' do
+        expected = {4 => 843}
+
         expect(@m1.monthly_rev).to eq(expected)
       end
     end
