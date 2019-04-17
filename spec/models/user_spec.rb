@@ -67,6 +67,78 @@ RSpec.describe User, type: :model do
   end
 
   describe 'instance methods' do
+    describe 'monthly_revenvue' do
+      before :each do
+        @u1 = create(:user, state: "CO", city: "Anywhere")
+        @u2 = create(:user, state: "OK", city: "Tulsa")
+        @u3 = create(:user, state: "IA", city: "Anywhere")
+        u4 = create(:user, state: "IA", city: "Des Moines")
+        u5 = create(:user, state: "IA", city: "Des Moines")
+        u6 = create(:user, state: "IA", city: "Des Moines")
+
+        @m1 = create(:merchant)
+        @i1 = create(:item, merchant_id: @m1.id, inventory: 20)
+        @i2 = create(:item, merchant_id: @m1.id, inventory: 20)
+        @i3 = create(:item, merchant_id: @m1.id, inventory: 20)
+        @i4 = create(:item, merchant_id: @m1.id, inventory: 20)
+        @i5 = create(:item, merchant_id: @m1.id, inventory: 20)
+        @i6 = create(:item, merchant_id: @m1.id, inventory: 20)
+        @i7 = create(:item, merchant_id: @m1.id, inventory: 20)
+        @i8 = create(:item, merchant_id: @m1.id, inventory: 20)
+        @i9 = create(:inactive_item, merchant_id: @m1.id)
+
+        @m2 = create(:merchant)
+        @i10 = create(:item, merchant_id: @m2.id, inventory: 20)
+
+        o1 = create(:shipped_order, user: @u1)
+        o2 = create(:shipped_order, user: @u2)
+        o3 = create(:shipped_order, user: @u3)
+        o4 = create(:shipped_order, user: @u1)
+        o5 = create(:shipped_order, user: @u1)
+        o6 = create(:cancelled_order, user: u5)
+        o7 = create(:order, user: u6)
+        o11 = create(:shipped_order, user: @u1)
+        o21 = create(:shipped_order, user: @u2)
+        o31 = create(:shipped_order, user: @u3)
+        o41 = create(:shipped_order, user: @u1)
+        o51 = create(:shipped_order, user: @u1)
+        o61 = create(:cancelled_order, user: u5)
+        o71 = create(:order, user: u6)
+        @oi1 = create(:order_item, item: @i1, order: o1, quantity: 2, created_at: 1.months.ago)
+        @oi2 = create(:order_item, item: @i2, order: o2, quantity: 8, created_at: 2.months.ago)
+        @oi3 = create(:order_item, item: @i2, order: o3, quantity: 6, created_at: 3.months.ago)
+        @oi4 = create(:order_item, item: @i3, order: o3, quantity: 4, created_at: 4.months.ago)
+        @oi5 = create(:order_item, item: @i4, order: o4, quantity: 3, created_at: 5.months.ago)
+        @oi6 = create(:order_item, item: @i5, order: o5, quantity: 1, created_at: 6.months.ago)
+        @oi7 = create(:order_item, item: @i6, order: o6, quantity: 2, created_at: 7.months.ago)
+        @oi11 = create(:order_item, item: @i1, order: o11, quantity: 2, created_at: 8.months.ago)
+        @oi21 = create(:order_item, item: @i2, order: o21, quantity: 8, created_at: 9.months.ago)
+        @oi31 = create(:order_item, item: @i2, order: o31, quantity: 6, created_at: 10.months.ago)
+        @oi41 = create(:order_item, item: @i3, order: o31, quantity: 4, created_at: 11.months.ago)
+        @oi51 = create(:order_item, item: @i4, order: o41, quantity: 3, created_at: 12.months.ago)
+        @oi61 = create(:order_item, item: @i5, order: o51, quantity: 1, created_at: 13.months.ago)
+        @oi71 = create(:order_item, item: @i6, order: o61, quantity: 2, created_at: 14.months.ago)
+        @oi1.fulfill
+        @oi2.fulfill
+        @oi3.fulfill
+        @oi4.fulfill
+        @oi5.fulfill
+        @oi6.fulfill
+        @oi7.fulfill
+        @oi11.fulfill
+        @oi21.fulfill
+        @oi31.fulfill
+        @oi41.fulfill
+        @oi51.fulfill
+        @oi61.fulfill
+        @oi71.fulfill
+      end
+      xit 'returns the past twelve months of revenue for a merchant' do
+        expected = {}
+        binding.pry
+        expect(@m1.monthly_rev).to eq(expected)
+      end
+    end
     before :each do
       @u1 = create(:user, state: "CO", city: "Anywhere")
       @u2 = create(:user, state: "OK", city: "Tulsa")
@@ -199,6 +271,21 @@ RSpec.describe User, type: :model do
   end
 
   describe 'class methods' do
+    it 'chart_merchant_revenue' do
+      merchant_1 = create(:merchant)
+      merchant_2 = create(:merchant)
+      user = create(:user)
+      item_1 = create(:item, merchant_id: merchant_1.id, price: 200)
+      item_2 = create(:item, merchant_id: merchant_2.id, price: 100)
+      order_1 = create(:shipped_order, user_id: user.id)
+      order_2 = create(:shipped_order, user_id: user.id)
+      order_item_1 = create(:fulfilled_order_item, item_id: item_1.id, order_id: order_1.id, price: 200, quantity: 10)
+      order_item_1 = create(:fulfilled_order_item, item_id: item_2.id, order_id: order_2.id, price: 100, quantity: 10)
+
+      expected = {"#{merchant_1.name}" => 2000.0, "#{merchant_2.name}" => 1000.0}
+      expect(User.chart_merchant_revenue).to eq(expected)
+    end
+
     it ".active_merchants" do
       active_merchants = create_list(:merchant, 3)
       inactive_merchant = create(:inactive_merchant)
