@@ -17,6 +17,14 @@ class User < ApplicationRecord
     items.where(active: true).order(:name)
   end
 
+  # def monthly_rev
+  #   # binding.pry
+  #   self.items.joins(order_items: :order)
+  #       .where(order_items: {fulfilled: true}, orders: {status: :shipped})
+  #       .select('extract(month from orders.created_at) as month, sum(order_items.price * order_items.quantity) as revenue')
+  #       .group('month').to_sql
+  # end
+
   def top_items_sold_by_quantity(limit)
     items.joins(order_items: :order)
          .where(order_items: {fulfilled: true}, orders: {status: :shipped})
@@ -111,6 +119,12 @@ class User < ApplicationRecord
          .select('users.name, sum(order_items.quantity) AS quantity')
          .order('quantity DESC')
          .limit(1).first
+  end
+
+  def self.chart_merchant_revenue
+    self.merchants_sorted_by_revenue.map do |merchant|
+      [merchant.name, merchant.total.to_f]
+    end.to_h
   end
 
   def self.active_merchants
