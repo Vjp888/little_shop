@@ -53,7 +53,9 @@ RSpec.describe Item, type: :model do
   describe 'instance methods' do
     before :each do
       @merchant = create(:merchant)
+      @merchant_2 = create(:merchant)
       @item = create(:item, user: @merchant, price: 50)
+      @item_2 = create(:item, user: @merchant_2, price: 10)
       @coupon_1 = Coupon.create(name: "coupon 1", discount_type: 0, amount_off: 50, merchant_id: @merchant.id)
       @coupon_2 = Coupon.create(name: "coupon 2", discount_type: 1, amount_off: 10, merchant_id: @merchant.id)
       @coupon_3 = Coupon.create(name: "coupon 3", discount_type: 1, amount_off: 60, merchant_id: @merchant.id)
@@ -102,6 +104,10 @@ RSpec.describe Item, type: :model do
 
       it 'will return the original price if no coupon is present' do
         expect(@item.adjusted_price.to_f).to eq(50.0)
+      end
+
+      it 'will return the items base price if the coupon does not apply to that item' do
+        expect(@item_2.adjusted_price(@coupon_1).to_f).to eq(10.0)
       end
     end
   end

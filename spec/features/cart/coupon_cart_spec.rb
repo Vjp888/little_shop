@@ -118,6 +118,28 @@ RSpec.describe 'as a user or visitor', type: :feature do
       expect(Order.last.total_cost).to eq(0)
     end
 
+    it 'will adds all items regardless of merchant to a users order' do
+      user = create(:user)
+      login_as(user)
+      visit item_path(@item_2)
+      click_button "Add to Cart"
+
+      visit item_path(@item_1)
+      click_button "Add to Cart"
+      visit cart_path
+
+      expect(page).to have_content("Total: $540.00")
+
+      fill_in :coupon_code, with: 'coupon 2'
+      click_button 'submit'
+
+      expect(page).to have_content("Total: $500.00")
+
+      click_button "Check Out"
+      
+      expect(Order.last.total_cost).to eq(500.0)
+    end
+
     it 'will only allow a user to use a coupon once' do
       user = create(:user)
       login_as(user)
