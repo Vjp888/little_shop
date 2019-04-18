@@ -20,7 +20,7 @@ class User < ApplicationRecord
   SELECT extract(month from orders.created_at) as month, sum(order_items.price * order_items.quantity) as revenue FROM "items" INNER JOIN "order_items" ON "order_items"."item_id" ="items"."id" INNER JOIN "orders" ON "orders"."id" = "order_items"."order_id" WHERE "items"."merchant_id" = 3 AND "order_items"."fulfilled" = 't' AND "orders"."status" = 2 GROUP BY month;
 =end
   def monthly_rev
-  self.items.joins(order_items: :order)
+    self.items.joins(order_items: :order)
         .where(order_items: {fulfilled: true}, orders: {status: :shipped})
         .group('month')
         .pluck('extract(month from orders.created_at) as month,
