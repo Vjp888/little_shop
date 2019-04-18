@@ -28,6 +28,16 @@ inactive_item_2 = create(:inactive_item, user: inactive_merchant_1)
 Random.new_seed
 rng = Random.new
 
+order = create(:shipped_order, created_at: 10.months.ago)
+create(:fulfilled_order_item, order: order, item: item_1, price: 1, quantity: 1, created_at: 10.months.ago, updated_at: 10.months.ago)
+order = create(:shipped_order, created_at: 9.months.ago)
+create(:fulfilled_order_item, order: order, item: item_1, price: 2, quantity: 30, created_at: 9.months.ago, updated_at: 9.months.ago)
+order = create(:shipped_order, created_at: 8.months.ago)
+create(:fulfilled_order_item, order: order, item: item_1, price: 50, quantity: 1, created_at: 8.months.ago, updated_at: 8.months.ago)
+order = create(:shipped_order, created_at: 7.months.ago)
+create(:fulfilled_order_item, order: order, item: item_1, price: 3, quantity: 10, created_at: 7.months.ago, updated_at: 7.months.ago)
+
+
 order = create(:shipped_order, user: user)
 create(:fulfilled_order_item, order: order, item: item_1, price: 1, quantity: 1, created_at: (rng.rand(3)+1).days.ago, updated_at: rng.rand(59).minutes.ago)
 create(:fulfilled_order_item, order: order, item: item_2, price: 2, quantity: 1, created_at: (rng.rand(23)+1).hour.ago, updated_at: rng.rand(59).minutes.ago)
